@@ -254,7 +254,7 @@ app.get("/getvehicle/:vehicleid", async (req, res) => {
         const getVehicle = await db.collection("vehicle").findOne({ _id: new mongodb.ObjectId(req.params.vehicleid) })
 
         if (getVehicle) {
-            res.json({ message: "Find one vehicle", getVehicle })
+            res.json(getVehicle)
         } else {
             res.json({ message: "No vehicles" })
         }
