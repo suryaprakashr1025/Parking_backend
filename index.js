@@ -18,34 +18,19 @@ app.use(cors({
 
 app.use(express.json())
 
-// const date = new Date()
 
-// const calender = {
-//     day: date.getDate(),
-//     month: date.getMonth() + 1,
-//     year: date.getFullYear(),
-//     hour: date.getHours(),
-//     minute: date.getMinutes()
-// }
-
-// const parkingDate = `${calender.day}-${calender.month}-${calender.year}`
-// console.log(parkingDate)
-
-// const parkingTime = `${calender.hour}h-${calender.minute}m`
-// console.log(parkingTime)
 
 const authorize = (req, res, next) => {
     try {
-        console.log("first" + req.headers.authorization)
+      
         if (req.headers.authorization) {
-            console.log("surya1")
-            const head = req.headers.authorization
-            console.log(head)
-            const splithead = head.split(" ")[1]
-            console.log(splithead)
+  
+            // const head = req.headers.authorization
+    
+            // const splithead = head.split(" ")[1]
+     
             const decodedToken = jwt.verify(req.headers.authorization, JWT_SECRET)
-            console.log("surya2")
-            console.log("decodedToken" + decodedToken)
+        
             if (decodedToken) {
                 next()
             }
@@ -117,10 +102,7 @@ app.post("/register", async (req, res) => {
     }
 })
 
-// "username": "surya",
-// "email": "suryaprakashr1025@gmail.com",
-// "phone": 9566953853,
-// "password": "surya123"
+
 
 app.get("/adminlist", async (req, res) => {
     try {
@@ -143,9 +125,7 @@ app.post("/login", async (req, res) => {
 
         if (findusername) {
             console.log(findusername.email)
-            // const payload = {
-            //     email: findusername.email,
-            // }
+          
 
             const token = jwt.sign({ email: findusername.email }, JWT_SECRET, { expiresIn: "1d" })
             console.log(token)
@@ -185,7 +165,7 @@ app.delete("/deleteadmin/:registerid", async (req, res) => {
     }
 })
 
-app.post("/createvehicle", async (req, res) => {
+app.post("/createvehicle",authorize, async (req, res) => {
     try {
         const connection = await MongoClient.connect(url)
         const db = connection.db("parking")
@@ -220,13 +200,9 @@ app.post("/createvehicle", async (req, res) => {
         res.status(500).json({ message: "something went wrong" })
     }
 })
-// {
-//     "client_ name":"surya",
-//     "vehicle_name":"Honda dream",
-//     "vehicleNo":"TN37BW6114"
-// }
 
-app.get("/allvehicle", async (req, res) => {
+
+app.get("/allvehicle",authorize, async (req, res) => {
     try {
         const connection = await MongoClient.connect(url)
         const db = connection.db("parking")
@@ -246,7 +222,7 @@ app.get("/allvehicle", async (req, res) => {
     }
 })
 
-app.get("/findallvehicle/vehicleno", async (req, res) => {
+app.get("/findallvehicle/vehicleno",authorize, async (req, res) => {
     try {
         const connection = await MongoClient.connect(url)
         const db = connection.db("parking")
@@ -265,7 +241,7 @@ app.get("/findallvehicle/vehicleno", async (req, res) => {
 })
 
 
-app.get("/getvehicle/:vehicleid", async (req, res) => {
+app.get("/getvehicle/:vehicleid",authorize, async (req, res) => {
     try {
         const connection = await MongoClient.connect(url)
         const db = connection.db("parking")
@@ -350,7 +326,7 @@ app.put("/endvehicle/:vehicleid", async (req, res) => {
     }
 })
 
-app.put("/updatevehicle/:vehicleid",  async (req, res) => {
+app.put("/updatevehicle/:vehicleid",authorize,  async (req, res) => {
     try {
         const connection = await MongoClient.connect(url)
         const db = connection.db("parking")
