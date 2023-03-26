@@ -231,10 +231,10 @@ app.get("/allvehicle", async (req, res) => {
         const connection = await MongoClient.connect(url)
         const db = connection.db("parking")
         
-        const {limit = 5,page = 1 } = req.query
-        const allVehicle = await db.collection("vehicle").find({ status: { $nin: ["Deactive"] } })
-                                                         .limit(limit * 1)
-                                                         .skip((page - 1)*page).toArray()
+        // const {limit = 3,page = 1 } = req.query
+        const allVehicle = await db.collection("vehicle").find({ status: { $nin: ["Deactive"] } }).toArray()
+                                                        //  .limit(limit * 1)
+                                                        //  .skip((page - 1)*page)
         if (allVehicle) {
             res.json(allVehicle)
         } else {
@@ -246,12 +246,31 @@ app.get("/allvehicle", async (req, res) => {
     }
 })
 
+app.get("/findallvehicle/vehicleno", async (req, res) => {
+    try {
+        const connection = await MongoClient.connect(url)
+        const db = connection.db("parking")
+        
+       
+        const allVehicle = await db.collection("vehicle").find({vehicleNo:req.vehicleNo},{ status: { $nin: ["Deactive"] } }).toArray()
+        if (allVehicle) {
+            res.json(allVehicle)
+        } else {
+            res.json({ message: "something went wrong" })
+        }
+        await connection.close()
+    } catch (error) {
+        res.status(500).json({ message: "something went wrong" })
+    }
+})
+
+
 app.get("/getvehicle/:vehicleid", async (req, res) => {
     try {
         const connection = await MongoClient.connect(url)
         const db = connection.db("parking")
 
-        const getVehicle = await db.collection("vehicle").findOne({ _id: new mongodb.ObjectId(req.params.vehicleid) })
+        const getVehicle = await db.collection("vehicle").find({ _id: new mongodb.ObjectId(req.params.vehicleid) }).toArray()
 
         if (getVehicle) {
             res.json(getVehicle)
