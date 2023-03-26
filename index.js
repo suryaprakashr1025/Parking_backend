@@ -13,7 +13,7 @@ const url = process.env.db
 const app = express()
 
 app.use(cors({
-    origin: "*",
+    origin: "https://master--melodic-taiyaki-72296c.netlify.app/",
 }))
 
 app.use(express.json())
